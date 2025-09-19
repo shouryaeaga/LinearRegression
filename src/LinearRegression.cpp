@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 
-void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std::vector<int> &y){
+void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std::vector<double> &y){
     if (X.size() != y.size() || X.size() == 0) {
         throw std::invalid_argument("Incorrect dimensions provided");
     }
@@ -23,7 +23,7 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
         LinearRegression::weights.push_back(slope);
     }
 
-    std::vector<int> predicted = LinearRegression::predict(X);
+    std::vector<double> predicted = LinearRegression::predict(X);
 
 
     double previous_loss = INFINITY;
@@ -31,7 +31,7 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
 
     while (abs(loss-previous_loss) > threshold) {
         // Update bias
-        int total_loss = 0;
+        double total_loss = 0;
         for (int i = 0; i < predicted.size(); i++) {
             total_loss += predicted[i] - y[i];
         }
@@ -41,10 +41,12 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
         // Update weights
         
         for (int feature = 0; feature < X[0].size(); feature++) {
-            int e = 0;
+            double e = 0;
             for (int i = 0; i < X.size(); i++) {
                 e += (predicted[i] - y[i])*X[i][feature];
             }
+            double gradient = (2/n)*e;
+            weights[feature+1].weight -= learning_rate*gradient;
         }
 
         predicted = LinearRegression::predict(X);
@@ -59,7 +61,7 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
     
 }
 
-std::vector<int> LinearRegression::predict(const std::vector<std::vector<double>> &X) {
+std::vector<double> LinearRegression::predict(const std::vector<std::vector<double>> &X) {
     if (X.size() == 0) {
         throw std::invalid_argument("Input data has improper dimensions.");
     }
@@ -67,7 +69,7 @@ std::vector<int> LinearRegression::predict(const std::vector<std::vector<double>
         throw std::invalid_argument("Input data has improper dimensions.");
     }
 
-    std::vector<int> y;
+    std::vector<double> y;
 
     for (int h = 0; h < X.size(); h++) {
         double result = 0;
@@ -78,7 +80,7 @@ std::vector<int> LinearRegression::predict(const std::vector<std::vector<double>
                 result += X[h][i-1] * weights[i].weight;
             }
         }
-        y.push_back(round(result));
+        y.push_back(result);
     }
 
     return y;
@@ -86,7 +88,7 @@ std::vector<int> LinearRegression::predict(const std::vector<std::vector<double>
 }
 
 
-double LinearRegression::MSE_loss(const std::vector<int> &y_true, const std::vector<int> &y_pred)
+double LinearRegression::MSE_loss(const std::vector<double> &y_true, const std::vector<double> &y_pred)
 {
     double loss = 0.0;
     int n = y_true.size();
