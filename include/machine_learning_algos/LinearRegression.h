@@ -2,11 +2,13 @@
 
 class LinearRegression {
     public:
-        LinearRegression(double learning_rate = 0.01, double threshold = 0.00001) : learning_rate(learning_rate), threshold(threshold) {};
+        LinearRegression(double learning_rate = 0.001, double threshold = 0.00001) : learning_rate(learning_rate), threshold(threshold) {};
 
         void fit(const std::vector<std::vector<double>>& X, const std::vector<double>& y);
 
         std::vector<double> predict(const std::vector<std::vector<double>>& X);
+
+        float evaluate(std::vector<std::vector<double>> X, std::vector<double> y);
     private:
         enum WeightType {
             BIAS,
@@ -23,6 +25,4 @@ class LinearRegression {
         double threshold;
 
         double MSE_loss(const std::vector<double>& y_true, const std::vector<double>& y_pred);
-
-        
 };

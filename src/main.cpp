@@ -3,7 +3,29 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <math.h>
+#include <iomanip>
 #include "machine_learning_algos/LinearRegression.h"
+
+void standardise(std::vector<std::vector<double>> &X) {
+    int n = X.size();
+    int m = X[0].size();
+    for (int j = 0; j < m; j++) {
+        // calculate mean
+        double tot = 0;
+        for (int i = 0; i < n; i++) tot+=X[i][j];
+        double mean = tot/n;
+
+        double stdev = 0;
+        for (int i = 0; i < n; i++) stdev += pow(X[i][j] - mean, 2);
+        stdev = sqrt(stdev / n);
+
+        for (int i = 0; i < n; i ++) {
+            if (stdev != 0)
+                X[i][j] = (X[i][j] - mean)/stdev;
+        }
+    }
+}
 
 std::vector<std::vector<double>> loadCSV(const std::string &filename) {
     std::vector<std::vector<double>> data;
@@ -56,5 +78,17 @@ int main(int, char**){
         X.push_back(data[i]);
     }
 
+    std::vector<std::vector<double>> X_train = std::vector<std::vector<double>>(X.begin(), X.begin() + 300);
+    std::vector<std::vector<double>> X_test = std::vector<std::vector<double>>(X.begin() + 300, X.end());
+    std::vector<double> y_train = std::vector<double>(y.begin(), y.begin() + 300);
+    std::vector<double> y_test = std::vector<double>(y.begin() + 300, y.end());
+
+    standardise(X_train);
+    standardise(X_test);
+
     std::cout << "loaded data\n";
+
+    housingDatasetRegression.fit(X_train, y_train);
+
+    std::cout << std::fixed << std::setprecision(2) << "R^2: " << housingDatasetRegression.evaluate(X_train, y_train) << std::endl;
 }

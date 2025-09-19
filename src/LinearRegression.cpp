@@ -33,20 +33,18 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
         // Update bias
         double total_loss = 0;
         for (int i = 0; i < predicted.size(); i++) {
-            total_loss += predicted[i] - y[i];
+            total_loss += (2.0/n)*(predicted[i] - y[i]);
         }
-        double bias_gradient = (2.0/n)*total_loss;
-        weights[0].weight -= learning_rate*bias_gradient;
+        weights[0].weight -= learning_rate*total_loss;
         
         // Update weights
         
         for (int feature = 0; feature < X[0].size(); feature++) {
             double e = 0;
             for (int i = 0; i < X.size(); i++) {
-                e += (predicted[i] - y[i])*X[i][feature];
+                e += (2.0/n)*(predicted[i] - y[i])*X[i][feature];
             }
-            double gradient = (2.0/n)*e;
-            weights[feature+1].weight -= learning_rate*gradient;
+            weights[feature+1].weight -= learning_rate*e;
         }
 
         predicted = LinearRegression::predict(X);
@@ -54,10 +52,6 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
         loss = LinearRegression::MSE_loss(y, predicted);
 
     }
-
-    std::cout << weights[0].weight << std::endl;
-    std::cout << predicted[0] << " " << predicted[1] << std::endl;
-
     
 }
 
@@ -93,8 +87,24 @@ double LinearRegression::MSE_loss(const std::vector<double> &y_true, const std::
     double loss = 0.0;
     int n = y_true.size();
     for (int i = 0; i < n; ++i) {
-        loss += pow((y_pred[i] - y_true[i]), 2);
+        loss += pow((y_pred[i] - y_true[i]), 2)/n;
     }
 
-    return loss/n;
+    return loss;
+}
+
+float LinearRegression::evaluate(std::vector<std::vector<double>> X, std::vector<double> y) {
+    double mean = 0;
+    for (int i = 0; i < y.size(); i++) {
+        mean += y[i];
+    }
+    mean /= y.size();
+    double sum_predict_diff = 0;
+    double sum_mean_diff = 0;
+    for (int i = 0; i < y.size(); i++) {
+        double prediction = predict({X[i]})[0];
+        sum_predict_diff += pow((y[i] - prediction), 2);
+        sum_mean_diff += pow((y[i] - mean), 2);
+    }
+    return 1 - (sum_predict_diff/sum_mean_diff);
 }
