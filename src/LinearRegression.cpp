@@ -35,7 +35,7 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
         for (int i = 0; i < predicted.size(); i++) {
             total_loss += predicted[i] - y[i];
         }
-        double bias_gradient = (2/n)*total_loss;
+        double bias_gradient = (2.0/n)*total_loss;
         weights[0].weight -= learning_rate*bias_gradient;
         
         // Update weights
@@ -45,7 +45,7 @@ void LinearRegression::fit(const std::vector<std::vector<double>> &X, const std:
             for (int i = 0; i < X.size(); i++) {
                 e += (predicted[i] - y[i])*X[i][feature];
             }
-            double gradient = (2/n)*e;
+            double gradient = (2.0/n)*e;
             weights[feature+1].weight -= learning_rate*gradient;
         }
 

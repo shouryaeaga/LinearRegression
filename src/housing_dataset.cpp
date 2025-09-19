@@ -3,7 +3,6 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include "machine_learning_algos/LinearRegression.h"
 
 std::vector<std::vector<double>> loadCSV(const std::string &filename) {
     std::vector<std::vector<double>> data;
@@ -25,36 +24,13 @@ std::vector<std::vector<double>> loadCSV(const std::string &filename) {
             }
         }
         data.push_back(temp);
-        temp.clear();
     }
 
     file.close();
     return data;
 }
 
-int main(int, char**){
-    LinearRegression regression(0.001);
-    std::vector<std::vector<double>> X = {{1.0, 2.0, 3.0, 4.0}, {2.0, 4.0, 6.0, 8.0}, {3.0, 6.0, 9.0, 12.0}};
-    std::vector<double> y = {1, 2, 3};
-
-    regression.fit(X, y);
-
-    std::vector<double> result = regression.predict(X);
-    for (auto& elem : result) {
-        std::cout << elem << std::endl;
-    }
-
-    std::cout << "----- HOUSING DATASET ------\n";
-
+int main() {
     std::vector<std::vector<double>> data = loadCSV("../Housing.csv");
-    LinearRegression housingDatasetRegression;
-    X.clear();
-    y.clear();
-    for (int i = 0; i < data.size(); i++) {
-        y.push_back(data[i][0]);
-        data[i].erase(data[i].begin());
-        X.push_back(data[i]);
-    }
-
-    std::cout << "loaded data\n";
+    
 }
