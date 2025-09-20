@@ -5,6 +5,7 @@
 #include <string>
 #include <math.h>
 #include <iomanip>
+#include <ctime>
 #include "machine_learning_algos/LinearRegression.h"
 
 void standardise(std::vector<std::vector<double>> &X) {
@@ -68,7 +69,7 @@ int main(int, char**){
 
     std::cout << "----- HOUSING DATASET ------\n";
 
-    std::vector<std::vector<double>> data = loadCSV("../Housing.csv");
+    std::vector<std::vector<double>> data = loadCSV("../Housing_Cleaned.csv");
     LinearRegression housingDatasetRegression;
     X.clear();
     y.clear();
@@ -78,10 +79,21 @@ int main(int, char**){
         X.push_back(data[i]);
     }
 
-    std::vector<std::vector<double>> X_train = std::vector<std::vector<double>>(X.begin(), X.begin() + 300);
-    std::vector<std::vector<double>> X_test = std::vector<std::vector<double>>(X.begin() + 300, X.end());
-    std::vector<double> y_train = std::vector<double>(y.begin(), y.begin() + 300);
-    std::vector<double> y_test = std::vector<double>(y.begin() + 300, y.end());
+    
+
+    //random shuffle
+    std::srand(std::time(0));
+    for (int i = 0; i < X.size(); i ++) {
+        int j = std::rand() % X.size();
+        std::swap(X[i], X[j]);
+        std::swap(y[i], y[j]);
+    }
+
+    std::vector<std::vector<double>> X_train = {X.begin(), X.begin() + (int)(0.8*X.size())};
+    std::vector<std::vector<double>> X_test = {X.begin() + (int)(0.8*X.size()), X.end()};
+    std::vector<double> y_train = {y.begin(), y.begin() + (int)(0.8*y.size())};
+    std::vector<double> y_test = {y.begin() + (int)(0.8*y.size()), y.end()};
+
 
     standardise(X_train);
     standardise(X_test);
