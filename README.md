@@ -3,6 +3,10 @@
 This repository contains a simple implementation of **Linear Regression** in C++ as a learning project.  
 It includes `src/main.cpp` as example code you can use, and `include/machine_learning_algos/LinearRegression.h` and `src/LinearRegression.cpp` which contains the class for the implementation which you can copy and paste into your project.
 
+It also contains a jupyter notebook `data_cleansing.ipynb` which includes some data cleansing and a scikit-learn evaluation of the same Housing prices dataset for comparison.
+
+This is the [housing prices dataset](https://www.kaggle.com/datasets/ashydv/housing-dataset).
+
 ---
 
 ## Api
